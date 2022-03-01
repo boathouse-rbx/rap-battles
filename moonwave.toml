@@ -1,0 +1,27 @@
+title = "Rap Battles"
+gitRepoUrl = ""
+
+gitSourceBranch = "master"
+changelog = true
+classOrder = []
+
+[docusaurus]
+onBrokenLinks = "throw"
+onBrokenMarkdownLinks = "warn"
+favicon = ""
+
+organizationName = ""
+projectName = ""
+url = ""
+baseUrl = ""
+tagline = ""
+
+[navbar]
+hideableSidebar = true
+
+[footer]
+style = "dark"
+
+[footer.links]
+title = ""
+copyright = "Copyright © 2021 E.K. Manovski-Bull. Built with Moonwave and Docusaurus"

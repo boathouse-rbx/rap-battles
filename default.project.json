@@ -1,0 +1,93 @@
+{
+  "name": "Rap Battles",
+  "tree": {
+    "$className": "DataModel",
+
+    "UseR6InStudio": {
+      "$className": "Flag"
+    },
+
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": {
+        "$path": "src/shared"
+      },
+      "Assets": {
+        "$path": "assets"
+      },
+      "Library": {
+        "$path": "lib"
+      },
+      "Packages": {
+        "$path": "Packages"
+      },
+      "DevPackages": {
+        "$path": "DevPackages"
+      }
+    },
+
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+
+      "StarterCharacter": {
+        "$path": "assets/StarterCharacter.rbxmx"
+      },
+
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+
+    "Workspace": {
+      "$className": "Workspace",
+      "Map": {
+        "$path": "assets/Map.rbxm"
+      }
+    },
+
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "GeographicLatitude": 21,
+        "ExposureCompensation": 0.05,
+        "ClockTime": 12
+      },
+
+      "Bloom" : {
+        "$path": "assets/Bloom.rbxm"
+      },
+
+      "Dark Skies" : {
+        "$path": "assets/Dark Skies.rbxm"
+      },
+
+      "Atmosphere": {
+        "$path": "assets/Atmosphere.rbxm"
+      }
+    },
+
+    "HttpService": {
+      "$className": "HttpService",
+      "$properties": {
+        "HttpEnabled": true
+      }
+    },
+
+    "SoundService": {
+      "$className": "SoundService",
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    }
+  }
+}

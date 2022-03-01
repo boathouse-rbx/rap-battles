@@ -1,0 +1,41 @@
+{
+	"Create Cmdr Command": {
+		"scope": "lua,lua",
+		"prefix": "cmdr-scaffold",
+		"body": [
+      "--!strict",
+			"return {",
+			"\tName = \"$1\",",
+			"\tAliases = {},",
+			"\tGroup = \"$3\",",
+			"\tArgs = {",
+			"\t},",
+			"}"
+		]
+	},
+
+	"Create Cmdr Argument": {
+		"scope": "lua,lua",
+		"prefix": "cmdr-argument",
+		"body": [
+			"{",
+			"\tType = \"$1\",",
+			"\tName = \"$2\",",
+			"}"
+		]
+	},
+
+	"Create Cmdr Inline Argument": {
+		"scope": "lua,lua",
+		"prefix": "cmdr-argument-inline",
+		"body": [
+			"function (context)",
+			"\treturn {",
+			"\t\tType = context.Cmdr.Util.MakeEnumType(\"$1\", {\"$2\"),",
+			"\t\tName = \"$3\",",
+			"\t\tDescription = \"$4\",",
+			"\t}",
+			"end,"
+		]
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"Create Knit Service": {
+		"scope": "lua,lua",
+		"prefix": "knit-service",
+		"body": [
+      "--!strict",
+			"local ReplicatedStorage = game:GetService(\"ReplicatedStorage\")",
+
+			"",
+			"local Knit = require(ReplicatedStorage.Packages.Knit)",
+			"local Signal = require(Knit.Util.Signal)",
+			"local Logger = Knit.Logger",
+      "local Global = Knit.Global",
+
+			"",
+			"local $1Service = Knit.CreateService({",
+			"\tName = \"$1Service\",",
+			"\tClient = {},",
+			"})",
+
+			"",
+			"return $1Service"
+		]
+	},
+
+	"Create Knit Controller": {
+		"scope": "lua,lua",
+		"prefix": "knit-controller",
+		"body": [
+      "--!strict",
+			"local ReplicatedStorage = game:GetService(\"ReplicatedStorage\")",
+			"",
+			"local Knit = require(ReplicatedStorage.Packages.Knit)",
+			"local Signal = require(Knit.Util.Signal)",
+			"local Logger = Knit.Logger",
+			"",
+			"local $1 = Knit.CreateController({",
+			"\tName = \"$1\",",
+			"})",
+			"",
+			"return $1"
+		]
+	}
+}

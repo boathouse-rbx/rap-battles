@@ -1,0 +1,8 @@
+{
+  "rojo.enableTelemetry": false,
+  "rojo.releaseBranch": "6.x",
+  "robloxLuaAutofills.rojo": true,
+  "Lua.diagnostics.disable": [
+    "redundant-value"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Crazy Golf",
+  "version": "0.0.0",
+  "scripts": {
+    "build": "rojo build --output game.rbxlx",
+    "package": "wally install",
+    "install": "foreman install && npm run package",
+    "dev": "npm run build && concurrently \"rojo serve\" \"game.rbxlx\"",
+    "serve": "rojo serve"
+  },
+  "dependencies": {
+    "moonwave": "^0.2.10"
+  },
+  "devDependencies": {
+    "concurrently": "^6.3.0"
+  }
+}
