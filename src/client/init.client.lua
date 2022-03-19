@@ -20,10 +20,6 @@ local function startClient()
 	-- Start Knit
 	Knit.Start():andThen(function()
 		Knit.Logger:Info("[cmain] Client has started! Running version {:?} in environment {:?}.", Knit.Global.VERSION, Knit.Global.ENVIRONMENT)
-
-		for name in pairs(Knit.Controllers) do
-			Knit.Logger:Debug("[cmain] Loaded controller {:?}!", name)
-		end
 	end):catch(function(err)
 		Knit.Logger:Warn("[cmain] A fatal error occurred while starting Knit: {:?}", err)
 

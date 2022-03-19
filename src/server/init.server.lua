@@ -15,10 +15,6 @@ local function startServer()
 	Knit.Start():andThen(function()
 		Knit.Logger:Info("[smain] Server has started! Running version {:?} in environment {:?}.", Knit.Global.VERSION, Knit.Global.ENVIRONMENT)
 
-		for name in pairs(Knit.Services) do
-			Knit.Logger:Debug("[smain] Loaded service {:?}!", name)
-		end
-
 		local serverReady = Instance.new("BoolValue")
 		serverReady.Name = Knit.Global.SERVER_READY_FLAG_NAME
 		serverReady.Value = true

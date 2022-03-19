@@ -3,14 +3,42 @@
   "tree": {
     "$className": "DataModel",
 
-    "UseR6InStudio": {
-      "$className": "Flag"
-    },
-
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "Server": {
         "$path": "src/server"
+      },
+
+      "EmojiChatController": {
+        "$path": "models/EmojiChatController.rbxm"
+      }
+    },
+
+    "Chat": {
+      "$className": "Chat",
+
+      "BubbleChat": {
+        "$path": "assets/BubbleChat.rbxm"
+      },
+
+      "ChatLocalization": {
+        "$path": "assets/ChatLocalization.rbxm"
+      },
+
+      "ChatModules": {
+        "$path": "assets/ChatModules.rbxm"
+      },
+
+      "ChatScript": {
+        "$path": "assets/ChatScript.rbxm"
+      },
+
+      "ChatServiceRunner": {
+        "$path": "assets/ChatServiceRunner.rbxm"
+      },
+
+      "ClientChatModules": {
+        "$path": "assets/ClientChatModules.rbxm"
       }
     },
 
@@ -33,17 +61,24 @@
       }
     },
 
+    "ReplicatedFirst": {
+      "$className": "ReplicatedFirst",
+      "Chat": {
+        "$path": "includes/Chat"
+      }
+    },
+
     "StarterPlayer": {
       "$className": "StarterPlayer",
-
-      "StarterCharacter": {
-        "$path": "assets/StarterCharacter.rbxmx"
-      },
 
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
         "Client": {
           "$path": "src/client"
+        },
+
+        "EmojiChatClientController": {
+          "$path": "models/EmojiChatClientController.rbxm"
         }
       }
     },
@@ -60,7 +95,8 @@
       "$properties": {
         "GeographicLatitude": 21,
         "ExposureCompensation": 0.05,
-        "ClockTime": 12
+        "ClockTime": 12,
+        "Technology": "ShadowMap"
       },
 
       "Bloom" : {
