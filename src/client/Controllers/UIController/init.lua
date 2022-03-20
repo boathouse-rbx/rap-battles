@@ -26,9 +26,14 @@ local UIController = Knit.CreateController({
 	ShopToggled = Signal.new(),
 })
 
+local DJ = require(script.DJ)
 local SidebarButtons = require(script.SidebarButtons)
 local Window = require(script.Window)
 local Topbar = require(script.Topbar)
+
+local Vinyl = DJ.Vinyl
+local Status = DJ.Status
+local Slider = DJ.Slider
 
 local SettingsButton = SidebarButtons.SettingsButton
 local ShopButton = SidebarButtons.ShopButton
@@ -127,10 +132,45 @@ function UIController:KnitStart()
 				shouldOpen = djWindowEnabled,
 
 				Size = UDim2.fromScale(0.7, 0.75),
+				ContainerSize = UDim2.fromScale(0.95, 0.8),
 				Title = "DJ Controls",
 
 				CloseButtonTweenInfo = Global.UI.CLOSE_BUTTON_TWEENINFO,
 				WindowSizeTweenInfo = Global.UI.WINDOW_SIZE_TWEENINFO,
+
+				[Children] = {
+					Vinyl {
+						AnchorPoint = Vector2.new(0, 0.5),
+						Position = UDim2.fromScale(0, 0.5),
+						RotationTweenInfo = Global.UI.VINYL_ROTATION_TWEEN_INFO
+					},
+
+					Vinyl {
+						AnchorPoint = Vector2.new(1, 0.5),
+						Position = UDim2.fromScale(1, 0.5),
+						RotationTweenInfo = Global.UI.VINYL_ROTATION_TWEEN_INFO
+					},
+
+					Status {
+						TextSize = 25,
+					},
+
+					Slider {
+						Position = UDim2.fromScale(0.1, 0.5)
+					},
+
+					Slider {
+						Position = UDim2.fromScale(0.355, 0.5)
+					},
+
+					Slider {
+						Position = UDim2.fromScale(0.645, 0.5)
+					},
+
+					Slider {
+						Position = UDim2.fromScale(0.9, 0.5)
+					}
+				}
 			}
 		}
 	}

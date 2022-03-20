@@ -51,10 +51,12 @@ Global.UI = {
 	SETTINGS_ICON = "rbxassetid://8251178684",
 	SHOP_ICON = "rbxassetid://9018904812",
 	DJ_ICON = "rbxassetid://9145009250",
+	VINYL_ICON = "rbxassetid://9146332166",
 
 	TYPEWRITER_TWEENINFO = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 1),
 	CLOSE_BUTTON_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
-	WINDOW_SIZE_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1)
+	WINDOW_SIZE_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
+	VINYL_ROTATION_TWEEN_INFO = TweenInfo.new(5)
 }
 
 Global.ROUND_MESSAGES = {
@@ -73,20 +75,21 @@ Global.ROUND_MESSAGES = {
 
 Global.ROUND_MUSIC = {
 	ROUND_BEATS = {
-		"rbxassetid://1839092699",
-		"rbxassetid://1836497150",
-		"rbxassetid://9040153041",
-		"rbxassetid://1836402682",
-		"rbxassetid://9063855475",
+		{ ID = "rbxassetid://1839092699", Name = "Scratch Lazer" },
+		{ ID = "rbxassetid://1836497150", Name = "Beat The Rap" },
+		{ ID = "rbxassetid://9040153041" },
+		{ ID = "rbxassetid://1836402682" },
+		{ ID = "rbxassetid://9063855475" },
 	},
 
 	VICTORY = {
-		"rbxassetid://160737154",
-		"rbxassetid://7082075631"
+		{ ID = "rbxassetid://160737154", Name = "Victory" },
+		{ ID = "rbxassetid://7082075631", Name = "Victory" }
 	},
 
+	LOSS = { ID = "rbxassetid://190705984", Name = "Lost"},
+
 	FINISHED_BEAT = "rbxassetid://1836513791",
-	LOSS = "rbxassetid://190705984",
 }
 
 ----------------

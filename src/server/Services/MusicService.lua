@@ -1,14 +1,19 @@
+local MarketplaceService = game:GetService("MarketplaceService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local Promise = require(Knit.Util.Promise)
 
 local Global = Knit.Global
 
 local MusicService = Knit.CreateService {
 	Name = "MusicService",
-	Client = {},
+	Client = {
+		Playing = Knit.CreateSignal(),
+		Ended = Knit.CreateSignal()
+	},
 }
 
 local Queue = {}
@@ -35,14 +40,27 @@ function MusicService:Play(id: string, length: number?)
 	self.Sound.SoundId = id
 	self.Sound:Play()
 
-	while self.Sound.Playing do
-		if self.Sound.TimePosition >= length then
-			self:Stop(true)
-			break
-		end
+	local name = self:GetSoundName()
+	MusicService.Client.Playing:FireAll(name)
 
-		task.wait()
-	end
+	self.Sound.Paused:Connect(function()
+		MusicService.Client.Ended:FireAll()
+	end)
+
+	self.Sound.Ended:Connect(function()
+		MusicService.Client.Ended:FireAll()
+	end)
+
+	task.spawn(function()
+		while self.Sound.Playing do
+			if self.Sound.TimePosition >= length then
+				self:Stop(true)
+				break
+			end
+
+			task.wait()
+		end
+	end)
 end
 
 function MusicService:TweenVolume(volume)
@@ -67,13 +85,32 @@ function MusicService:Stop(transition: boolean?)
 	end
 end
 
+function MusicService:GetSoundName()
+	if not self.Sound then return end
+
+	for _, song in ipairs(Global.ROUND_MUSIC.ROUND_BEATS) do
+		if song.ID == self.Sound.SoundId then
+			return song.Name
+		end
+	end
+end
+
+function MusicService.Client:GetSoundName()
+	return MusicService:GetSoundName()
+end
+
 function MusicService:Pause()
 	self.Sound:Pause()
 end
 
 function MusicService:HardStop()
 	self.Sound:Stop()
-	self.SoundId = ""
+	self.Sound.SoundId = ""
+end
+
+function MusicService:GetSoundId()
+	local omitted = string.gsub(self.Sound.SoundId, "rbxassetid://", "")
+	return tonumber(omitted)
 end
 
 function MusicService:CreateSound()
@@ -100,7 +137,7 @@ end
 
 function MusicService:KnitStart()
 	self:CreateSound()
-	--self:Play(Global.ROUND_MUSIC.ROUND_BEATS[5], 30)
+	self:Play(Global.ROUND_MUSIC.ROUND_BEATS[1].ID, 30)
 end
 
 return MusicService

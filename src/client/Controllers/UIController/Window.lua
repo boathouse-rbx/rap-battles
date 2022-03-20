@@ -126,9 +126,9 @@ local function Window(props)
 					BackgroundTransparency = 1,
 					AnchorPoint = Vector2.new(0.5, 0.5),
 					Position = UDim2.fromScale(0.5, 0.55),
-					Size = UDim2.fromScale(0.875, 0.7),
+					Size = props.ContainerSize or UDim2.fromScale(0.875, 0.7),
 
-					props[Children],
+					[Children] = props[Children],
 				},
 
 				New "TextLabel" {
