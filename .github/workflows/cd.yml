@@ -25,6 +25,10 @@ jobs:
     - name: Run Foreman
       run: foreman install
 
+    - name: Run Wally
+      run: wally install
+
+
     - name: Deploy
       run: rojo upload --cookie "$ROBLOSECURITY" --asset_id 9141286177
       env:
