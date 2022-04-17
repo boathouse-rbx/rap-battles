@@ -35,7 +35,7 @@ jobs:
     - name: Deploy
       uses: wei/curl@v1
       with:
-        args: --verbose --location --request POST 'https://apis.roblox.com/universes/v1/3432515351/places/9141286177/versions?versionType=Published' --header 'x-api-key: $WRITE_API_KEY' --header 'Content-Type: application/xml' -d ./game.rbxlx {"versionNumber":9}
+        args: --verbose --location --request POST 'https://apis.roblox.com/universes/v1/3432515351/places/9141286177/versions?versionType=Published' --header 'x-api-key: $WRITE_API_KEY' --header 'Content-Type: application/xml' -d ./game.rbxl
         env:
           WRITE_API_KEY: ${{ secrets.WRITE_API_KEY }}
 
