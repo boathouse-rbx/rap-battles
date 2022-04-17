@@ -63,23 +63,6 @@ local function Window(props)
 		end)
 	end
 
-	task.defer(function()
-		UserInputService.InputChanged:Connect(function(input)
-			if input == dragInput:get() and isDragging:get() then
-				local delta = input.Position - dragStart:get()
-				local start = dragStartPosition:get()
-				windowPosition:set(
-					UDim2.new(
-						start.X.Scale,
-						start.X.Offset + delta.X,
-						start.Y.Scale,
-						start.Y.Offset + delta.Y
-					)
-				)
-			end
-		end)
-	end)
-
 	return {
 		New "Frame" {
 			Position = windowPosition,
@@ -90,12 +73,27 @@ local function Window(props)
 			Visible = windowEnabled,
 
 			[OnEvent "InputBegan"] = function(input)
-				if input.UserInputType == Enum.UserInputType.MouseButton1 
+				if input.UserInputType == Enum.UserInputType.MouseButton1
 				or input.UserInputType == Enum.UserInputType.Touch then
 					local position = windowPosition:get()
 					isDragging:set(true)
 					dragStart:set(input.Position)
 					dragStartPosition:set(position)
+
+					UserInputService.InputChanged:Connect(function(input)
+						if input == dragInput:get() and isDragging:get() then
+							local delta = input.Position - dragStart:get()
+							local start = dragStartPosition:get()
+							windowPosition:set(
+								UDim2.new(
+									start.X.Scale,
+									start.X.Offset + delta.X,
+									start.Y.Scale,
+									start.Y.Offset + delta.Y
+								)
+							)
+						end
+					end)
 
 					input.Changed:Connect(function()
 						if input.UserInputState == Enum.UserInputState.End then

@@ -17,6 +17,8 @@ local Map = workspace:WaitForChild("Map")
 
 local FOV = 70
 
+local humanoids = {}
+
 function ScreenController:CreateScreen(part, face, camera)
 	local SurfaceGui = Instance.new("SurfaceGui")
 	SurfaceGui.Parent = Knit.Player:WaitForChild("PlayerGui", math.huge)
@@ -42,8 +44,14 @@ function ScreenController:CreateScreen(part, face, camera)
 		local character = player.Character or player.CharacterAdded:Wait()
 
 		if character:WaitForChild("Humanoid") then
-			handler:RenderHumanoid(character)
+			local humanoid = handler:RenderHumanoid(character)
+			humanoids[player.Name] = humanoid
 		end
+	end
+
+	local function onPlayerRemoving(player)
+		local humanoid = humanoids[player.Name]
+		humanoid:Destroy()
 	end
 
 	for _, object in ipairs(Map:GetDescendants()) do
@@ -57,18 +65,20 @@ function ScreenController:CreateScreen(part, face, camera)
 	end
 
 	Players.PlayerAdded:Connect(onPlayerAdded)
+	Players.PlayerRemoving:Connect(onPlayerRemoving)
 end
 
 function ScreenController:KnitStart()
+	local CameraFolder = Map:WaitForChild("Camera")
+	local CameraPart = CameraFolder:WaitForChild("ScreenCamera")
 	local ViewportCamera = Instance.new("Camera")
 	ViewportCamera.Parent = workspace
 	ViewportCamera.Name = "Screen"
 	ViewportCamera.FieldOfView = FOV
-	ViewportCamera.CFrame = workspace.Part.CFrame
+	ViewportCamera.CFrame = CameraPart.CFrame
 
-	local Stage = Map:WaitForChild("Stage")
-	local Screen = Stage:WaitForChild("InnerScreen")
-	self:CreateScreen(Screen, Enum.NormalId.Left, ViewportCamera)
+	local Screen = Map:WaitForChild("InnerScreen")
+	self:CreateScreen(Screen, Enum.NormalId.Right, ViewportCamera)
 end
 
 return ScreenController

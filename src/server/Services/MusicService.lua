@@ -1,6 +1,7 @@
 local MarketplaceService = game:GetService("MarketplaceService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
+local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
@@ -12,7 +13,12 @@ local MusicService = Knit.CreateService {
 	Name = "MusicService",
 	Client = {
 		Playing = Knit.CreateSignal(),
-		Ended = Knit.CreateSignal()
+		Ended = Knit.CreateSignal(),
+
+		VolumeSliderChanged = Knit.CreateSignal(),
+		ReverbSliderChanged = Knit.CreateSignal(),
+		DistortionSliderChanged = Knit.CreateSignal(),
+		PitchSliderChanged = Knit.CreateSignal()
 	},
 }
 
@@ -21,7 +27,24 @@ local Queue = {}
 local DEFAULT_LENGTH = 60
 local DEFAULT_VOLUME = 0.6
 
+local MAX_VOLUME = 3
+local MIN_VOLUME = 0.2
+
+local DEFAULT_DRYLEVEL = 15
+local DEFAULT_DIFFUSION = 0
+
+local DENSITY_MIN = 0
+local DENSITY_MAX = 1
+
+local REVERB_MULTIPLIER = 10
+
+local PITCH_DIVISOR = 2
+
 local SOUND_TWEEN_INFO = TweenInfo.new(math.pi, Enum.EasingStyle.Sine, Enum.EasingDirection.In)
+
+function MusicService:KnitInit()
+	self.GamepassService = Knit.GetService("GamepassService")
+end
 
 function MusicService:AddToQueue(id)
 	for _, song in ipairs(Queue) do
@@ -34,20 +57,26 @@ function MusicService:AddToQueue(id)
 	end
 end
 
-function MusicService:Play(id: string, length: number?)
+function MusicService:Play(id: number, length: number?)
 	length = length or DEFAULT_LENGTH
 
-	self.Sound.SoundId = id
+	self.Sound.SoundId = "rbxassetid://" .. id
 	self.Sound:Play()
 
 	local name = self:GetSoundName()
 	MusicService.Client.Playing:FireAll(name)
 
+	local onPlayerAdded = Players.PlayerAdded:Connect(function(player)
+		MusicService.Client.Playing:Fire(player, name)
+	end)
+
 	self.Sound.Paused:Connect(function()
+		onPlayerAdded:Disconnect()
 		MusicService.Client.Ended:FireAll()
 	end)
 
 	self.Sound.Ended:Connect(function()
+		onPlayerAdded:Disconnect()
 		MusicService.Client.Ended:FireAll()
 	end)
 
@@ -86,12 +115,29 @@ function MusicService:Stop(transition: boolean?)
 end
 
 function MusicService:GetSoundName()
-	if not self.Sound then return end
+	local id = MusicService:GetSoundId()
 
-	for _, song in ipairs(Global.ROUND_MUSIC.ROUND_BEATS) do
-		if song.ID == self.Sound.SoundId then
-			return song.Name
-		end
+	local function getInfo()
+		return Promise.async(function(resolve, reject)
+			local success, result = pcall(function()
+				return MarketplaceService:GetProductInfo(id)
+			end)
+
+			if success then
+				resolve(result)
+			else
+				reject(result)
+			end
+		end)
+	end
+
+	local success, result = getInfo():await()
+
+	if success then
+		return result.Name
+	else
+		warn(result)
+		return "Unknown"
 	end
 end
 
@@ -113,31 +159,95 @@ function MusicService:GetSoundId()
 	return tonumber(omitted)
 end
 
+function MusicService:PlayerIsDJ(player)
+	return self.GamepassService:PlayerOwnGamepass(player, Global.PRODUCTS.GAMEPASSES.DJ)
+end
+
+function MusicService.Client:ChangeVolume(player, newVolume)
+	if MusicService:PlayerIsDJ(player) then
+		MusicService.Sound.Volume = math.clamp(newVolume * 2, MIN_VOLUME, MAX_VOLUME)
+
+		for _, filteredPlayer in ipairs(Players:GetPlayers()) do
+			if MusicService:PlayerIsDJ(filteredPlayer) and not filteredPlayer == player then
+				MusicService.Client.VolumeSliderChanged:Fire(filteredPlayer, newVolume)
+			end
+		end
+	end
+end
+
+function MusicService.Client:ChangeReverb(player, newReverb)
+	if MusicService:PlayerIsDJ(player) then
+		local density = math.clamp(
+			newReverb,
+			DENSITY_MIN,
+			DENSITY_MAX
+		)
+
+		MusicService.Reverb.Enabled = if newReverb == 0 then false else true
+		MusicService.Reverb.Density = density
+		MusicService.Reverb.DryLevel = density + math.sin(density) * REVERB_MULTIPLIER
+
+		for _, filteredPlayer in ipairs(Players:GetPlayers()) do
+			if MusicService:PlayerIsDJ(filteredPlayer) and not filteredPlayer == player then
+				MusicService.Client.ReverbSliderChanged:Fire(filteredPlayer, newReverb)
+			end
+		end
+	end
+end
+
+function MusicService.Client:ChangePitch(player, newPitch)
+	if MusicService:PlayerIsDJ(player) then
+		MusicService.Pitch.Enabled = if newPitch == 0 then false else true
+		MusicService.Pitch.Octave = newPitch + math.sin(newPitch) / PITCH_DIVISOR
+
+		for _, filteredPlayer in ipairs(Players:GetPlayers()) do
+			if MusicService:PlayerIsDJ(filteredPlayer) and not filteredPlayer == player then
+				MusicService.Client.PitchSliderChanged:Fire(filteredPlayer, newPitch)
+			end
+		end
+	end
+end
+
+function MusicService.Client:ChangeDistortion(player, newDistortion)
+	if MusicService:PlayerIsDJ(player) then
+		MusicService.Distortion.Enabled = if newDistortion == 0 then false else true
+		MusicService.Distortion.Level = newDistortion
+
+		for _, filteredPlayer in ipairs(Players:GetPlayers()) do
+			if MusicService:PlayerIsDJ(filteredPlayer) and not filteredPlayer == player then
+				MusicService.Client.BassSliderChanged:Fire(filteredPlayer, newDistortion)
+			end
+		end
+	end
+end
+
 function MusicService:CreateSound()
 	local sound = Instance.new("Sound")
 	sound.Parent = workspace
 
-	local echo = Instance.new("EchoSoundEffect")
-	echo.Parent = sound
-	echo.Enabled = false
+	local distortion = Instance.new("DistortionSoundEffect")
+	distortion.Parent = sound
+	distortion.Enabled = false
 
 	local reverb = Instance.new("ReverbSoundEffect")
 	reverb.Parent = sound
 	reverb.Enabled = false
+	reverb.DryLevel = DEFAULT_DRYLEVEL
+	reverb.Diffusion = DEFAULT_DIFFUSION
 
 	local pitch = Instance.new("PitchShiftSoundEffect")
 	pitch.Parent = sound
 	pitch.Enabled = false
 
+	self.Sound = sound
 	self.Reverb = reverb
 	self.Pitch = pitch
-	self.Sound = sound
-	self.Echo = echo
+	self.Distortion = distortion
 end
 
 function MusicService:KnitStart()
 	self:CreateSound()
-	self:Play(Global.ROUND_MUSIC.ROUND_BEATS[1].ID, 30)
+	self:Play(Global.ROUND_MUSIC.ROUND_BEATS[1], 120)
 end
 
 return MusicService

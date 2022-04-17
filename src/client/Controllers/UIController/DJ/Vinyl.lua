@@ -31,7 +31,11 @@ local function Vinyl(props)
 			BackgroundTransparency = 1,
 			Image = Global.UI.VINYL_ICON,
 			Size = UDim2.fromScale(0.317, 0.576),
-			Rotation = Tween(rotation, props.RotationTweenInfo)
+			Rotation = Tween(rotation, props.RotationTweenInfo),
+
+			[Children] = {
+				New "UIAspectRatioConstraint" {}
+			}
 		}
 	}
 end

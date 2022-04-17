@@ -24,15 +24,15 @@ local ValidProperties	= {
 --Don't want scripts or welds in our clone object
 local function ClearInvalidChildren(Object)
 	local Children = Object:GetChildren()
-	
+
 	for i=1, #Children do
 		local c = Children[i]
-		
+
 		if not ValidChildren[c.ClassName] then
 			c:Destroy()
 		end
 	end
-	
+
 	return Object
 end
 
@@ -40,9 +40,9 @@ local ObjectHandler = {}
 ObjectHandler.__index = ObjectHandler
 
 function ObjectHandler.new(Handler, Object,ObjectClone,FPS)
-	
+
 	local objHandler = {}
-	
+
 	objHandler.Enabled		= FPS and true or false
 	objHandler.Handler		= Handler
 	objHandler.Object		= Object
@@ -52,14 +52,14 @@ function ObjectHandler.new(Handler, Object,ObjectClone,FPS)
 	objHandler.ObjectID		= HTTP:GenerateGUID(false)
 	objHandler.Showing		= true
 	objHandler.Running		= true
-	
-	
+
+
 	setmetatable(objHandler, ObjectHandler)
-	
+
 	if FPS and FPS>0 then
 		Handler.ObjectsRenderQueue[objHandler.ObjectID] = objHandler
 	end
-	
+
 	return objHandler
 end
 
@@ -69,9 +69,9 @@ function ObjectHandler:Destroy()
 end
 
 function ObjectHandler:SetFPS(NewFPS)
-	if NewFPS and type(NewFPS) == "number" then		
+	if NewFPS and type(NewFPS) == "number" then
 		self.WaitTime = 1/math.clamp(NewFPS,0,9999)
-		
+
 		if NewFPS>0 then
 			self.Handler.ObjectsRenderQueue[self.ObjectID] = self
 		else
@@ -96,7 +96,7 @@ function ObjectHandler:Hide()
 	self.Showing = false
 end
 
-function ObjectHandler:Show()	
+function ObjectHandler:Show()
 	self.Enabled = self.Running
 	self.ObjectClone.Transparency = self.Object.Transparency
 	self.Showing = true
@@ -104,13 +104,13 @@ end
 
 function ObjectHandler:Refresh()
 	if self.Enabled then return end
-	
+
 	self.ObjectClone.CFrame = self.Object.CFrame
-	
+
 	for prop,_ in pairs(ValidProperties) do
 		self.ObjectClone[prop] = self.Object[prop]
 	end
-	
+
 end
 
 
@@ -119,26 +119,26 @@ local ViewportHandler = {}
 ViewportHandler.__index = ViewportHandler
 
 function ViewportHandler.new(Frame)
-	
+
 	--Sanity checks
 	if not Frame or not (typeof(Frame) == "Instance" and Frame:IsA("ViewportFrame")) then warn("Invalid ViewportFrame") return end
-	
+
 	local Handler = {
 		HandlerID = HTTP:GenerateGUID(false);
 		Frame = Frame;
 		ObjectsRenderQueue = {};
 	}
-	
+
 	setmetatable(Handler, ViewportHandler)
-	
+
 	RS:BindToRenderStep("VH-"..Handler.HandlerID, Enum.RenderPriority.Camera.Value+1, function(Delta)
 		for ObjectID, ObjectInfo in pairs(Handler.ObjectsRenderQueue) do
 			local Object,ObjectClone,WaitTime = ObjectInfo.Object,ObjectInfo.ObjectClone,ObjectInfo.WaitTime
-			
+
 			if Object and Object.Parent then
-				
+
 				ObjectInfo.LastUpdate = ObjectInfo.LastUpdate + Delta
-							
+
 				if ObjectInfo.Enabled and Object.CFrame ~= ObjectClone.CFrame and ObjectInfo.LastUpdate >= WaitTime then
 					--If it has moved and FPS time has passed, then update
 					ObjectInfo.LastUpdate = 0
@@ -149,94 +149,94 @@ function ViewportHandler.new(Frame)
 			end
 		end
 	end)
-	
+
 	return Handler
 end
 
 
 function ViewportHandler:RenderObject(Object, FPS, Parent)
-	
+
 	--Sanity checks
 	if not Object or not (typeof(Object) == "Instance" and Object:IsA("BasePart")) then warn("Invalid Object") return end
-	
+
 	--Create clone for viewport
 	local ObjectClone = ClearInvalidChildren(Object:Clone())
-	
+
 	--Create handler
 	local objHandler = ObjectHandler.new(self, Object,ObjectClone,FPS)
-	
+
 	--Auto update visual properties
 	Object.Changed:Connect(function(Property)
 		if objHandler.Enabled and ValidProperties[Property] then
 			ObjectClone[Property] = Object[Property]
 		end
 	end)
-	
-	
-	
+
+
+
 	--Display
 	ObjectClone.Parent = Parent or self.Frame
-	
+
 	return objHandler
 end
 
 
 function ViewportHandler:RenderHumanoid(Character, Parent)
-	
+
 	--Sanity checks
 	if not Character or not (typeof(Character) == "Instance" and Character:IsA("Model")) then warn("Invalid Humanoid") return end
 	if not Character:FindFirstChildOfClass("Humanoid",true) then warn("Invalid Humanoid") return end
-	
-	
+
+
 	local humHandler = {
 		ObjHandlers = {}
 	}
-	
+
 	local CharacterClone = Instance.new("Model")
 		CharacterClone.Name = Character.Name
-		
+
 	local Descendants	= Character:GetDescendants()
 	for i=1, #Descendants do
 		local d = Descendants[i]
-		
+
 		if d:IsA("BasePart") then
 			humHandler.ObjHandlers[#humHandler.ObjHandlers+1] = self:RenderObject(d,99,CharacterClone)
 		end
 	end
-	
+
 	local Shirt,Pants = Character:FindFirstChildOfClass("Shirt"),Character:FindFirstChildOfClass("Pants")
-	
+
 	if Shirt then Shirt:Clone().Parent = CharacterClone end
 	if Pants then Pants:Clone().Parent = CharacterClone end
-	
-	
+
+
 	local Humanoid = StatelessHumanoid:Clone()
 		Humanoid.RigType = Character:FindFirstChildOfClass("Humanoid",true).RigType
 		Humanoid.Parent = CharacterClone
-	
+
 	CharacterClone.Parent = Parent or self.Frame
-	
-	
-	
+
+
+
 	function humHandler:Destroy()
 		for i=1, #self.ObjHandlers do
 			self.ObjHandlers[i]:Destroy()
 		end
 		CharacterClone:Destroy()
 	end
-	
+
 	return humHandler
 end
 
 function ViewportHandler:Destroy()
 	RS:UnbindFromRenderStep("VH-"..self.HandlerID)
-	
+
 	for ObjectID, ObjectInfo in pairs(self.ObjectsRenderQueue) do
 		if ObjectInfo.ObjectClone then
 			ObjectInfo.ObjectClone:Destroy()
 		end
 	end
-	
+
 	self.ObjectsRenderQueue = nil
 	self.Frame = nil
 end

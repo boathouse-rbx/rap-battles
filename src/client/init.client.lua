@@ -24,7 +24,7 @@ local function startClient()
 		Knit.Logger:Warn("[cmain] A fatal error occurred while starting Knit: {:?}", err)
 
 		-- Disconnnect client if the game won't load
-		Players.LocalPlayer:Kick("A fatal error occurred while starting the game, please rejoin.")
+		Players.LocalPlayer:Kick("A fatal error occurred while starting the game, please rejoin. If this keeps happening, please report it in the community server.")
 	end)
 end
 

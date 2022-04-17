@@ -10,12 +10,18 @@ local Humanoid = Character:WaitForChild("Humanoid")
 
 local TeleportController = Knit.CreateController { Name = "TeleportController" }
 
-local DEFAULT_OFFSET = Vector3.new(0, 3, 0)
+local DEFAULT_OFFSET = CFrame.new(0, 3, 0)
 
 local canCollideRecord = {}
 local isTeleporting = false
 
-function TeleportController:Teleport(position: Vector3)
+local IS_ON_STAGE = false
+
+function TeleportController:KnitInit()
+	self.RoundService = Knit.GetService("RoundService")
+end
+
+function TeleportController:Teleport(cframe: CFrame, shouldBeStill: boolean)
 	isTeleporting = not isTeleporting
 
 	for _, descendant in ipairs(workspace:GetDescendants()) do
@@ -25,7 +31,7 @@ function TeleportController:Teleport(position: Vector3)
 	end
 
 	local tween = TweenService:Create(Humanoid.RootPart, TweenInfo.new(0.5), {
-		CFrame = CFrame.new(position + DEFAULT_OFFSET) * CFrame.Angles(0, math.pi, 0)
+		CFrame = cframe * DEFAULT_OFFSET
 	})
 
 	tween:Play()
@@ -36,8 +42,6 @@ function TeleportController:Teleport(position: Vector3)
 			end
 		end
 	end)
-
-	isTeleporting = not isTeleporting
 end
 
 function TeleportController:KnitStart()
@@ -46,6 +50,10 @@ function TeleportController:KnitStart()
 			canCollideRecord[descendant.Name] = descendant.CanCollide
 		end
 	end
+
+	self.RoundService.Teleport:Connect(function(cframe, shouldBeStill)
+		self:Teleport(cframe, shouldBeStill)
+	end)
 
 	Humanoid.Died:Connect(function()
 		Character = Player.Character or Player.CharacterAdded:Wait()

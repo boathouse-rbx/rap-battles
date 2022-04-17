@@ -6,20 +6,25 @@ local Signal = require(ReplicatedStorage.Packages.signal)
 
 local Logger = Knit.Logger
 local Global = Knit.Global
+local Shared = Knit.Shared
 
 local RoundController = Knit.CreateController {
 	Name = "RoundController",
 
 	NotificationSent = Signal.new(),
-	NotificationDeleted = Signal.new()
+	NotificationDeleted = Signal.new(),
+	OpenChatDisplay = Signal.new(),
+	CloseChatDisplay = Signal.new(),
+	Chatted = Signal.new(),
 }
 
 local TYPEWRITER_TWEENINFO = Global.UI.TYPEWRITER_TWEENINFO
 
-local LOADING_TIME = 5
+local NOTIFICATION_TIME = Global.UI.NOTIFICATION_TIME
+local NOTIFICATION_DELAY = TYPEWRITER_TWEENINFO.Time + Global.UI.NOTIFICATION_DELAY_ADDITION
 
-local NOTIFICATION_TIME = 5
-local NOTIFICATION_DELAY = TYPEWRITER_TWEENINFO.Time + 0.75
+local isChatDisplayOpen = false
+local lastNotification = ""
 
 function RoundController:KnitInit()
 	self.RoundService = Knit.GetService("RoundService")
@@ -46,25 +51,30 @@ function RoundController:DeleteNotification()
 end
 
 function RoundController:KnitStart()
-	task.wait(LOADING_TIME)
 	self:SendNotification(Global.ROUND_MESSAGES.IDLE)
 
-	self:QueueNotifications({
-		string.format(Global.ROUND_MESSAGES.ROUND_BEGIN, "Ewanophobia", "Ewan", "undrscrhiko", "Josh"),
-		"bazinga message 666 pro gamer fart lol",
-		"peter griffin الله بونغ ضرطة براز الجنس"
-	})
+	self.RoundService.SendNotification:Connect(function(message)
+		self:SendNotification(message)
+	end)
 
-	self.RoundService.RoundStarted:Connect(function(player1, player2)
-		self:SendNotification(
-			string.format(
-				Global.ROUND_MESSAGES.ROUND_BEGIN,
-				player1.DisplayName,
-				player1.Name,
-				player2.DisplayName,
-				player2.Name
-			)
-		)
+	self.RoundService.DeleteNotification:Connect(function()
+		self:DeleteNotification()
+	end)
+
+	self.RoundService.OpenChatDisplay:Connect(function()
+		isChatDisplayOpen = true
+		self.OpenChatDisplay:Fire()
+	end)
+
+	self.RoundService.CloseChatDisplay:Connect(function()
+		isChatDisplayOpen = false
+		self.CloseChatDisplay:Fire()
+	end)
+
+	self.RoundService.SendChatDisplayMessage:Connect(function(message)
+		if isChatDisplayOpen then
+			self.Chatted:Fire(message)
+		end
 	end)
 end
 

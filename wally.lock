@@ -15,7 +15,7 @@ dependencies = []
 [[package]]
 name = "ewanophobia/rapbattles"
 version = "0.0.0"
-dependencies = [["ColourUtils", "csqrl/colour-utils@1.1.1"], ["Comm", "sleitnick/comm@0.1.2"], ["Janitor", "howmanysmall/janitor@1.13.15"], ["Promise", "evaera/promise@3.1.0"], ["TableUtil", "sleitnick/table-util@1.1.1"], ["knit", "sleitnick/knit@1.4.4"], ["signal", "sleitnick/signal@1.1.0"]]
+dependencies = [["ColourUtils", "csqrl/colour-utils@1.1.1"], ["Comm", "sleitnick/comm@0.1.2"], ["Janitor", "howmanysmall/janitor@1.13.15"], ["Knit", "sleitnick/knit@1.4.4"], ["Promise", "evaera/promise@3.1.0"], ["TableUtil", "sleitnick/table-util@1.1.1"], ["signal", "sleitnick/signal@1.1.0"]]
 
 [[package]]
 name = "howmanysmall/janitor"

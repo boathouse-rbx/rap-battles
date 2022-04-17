@@ -19,10 +19,6 @@ local Camera = workspace.CurrentCamera
 
 local CharacterController = Knit.CreateController { Name = "CharacterController" }
 
-function CharacterController:KnitInit()
-	self.PlayerService = Knit.GetService("PlayerService")
-end
-
 function CharacterController:UpdateNeck()
 	local direction = HumanoidRootPart.CFrame:ToObjectSpace(Camera.CFrame)
 	local C0 = CFrame.new(0, INITIAL_NECK_C0_Y, 0)

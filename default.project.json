@@ -18,27 +18,27 @@
       "$className": "Chat",
 
       "BubbleChat": {
-        "$path": "assets/BubbleChat.rbxm"
+        "$path": "models/BubbleChat.rbxm"
       },
 
       "ChatLocalization": {
-        "$path": "assets/ChatLocalization.rbxm"
+        "$path": "models/ChatLocalization.rbxm"
       },
 
       "ChatModules": {
-        "$path": "assets/ChatModules.rbxm"
+        "$path": "models/ChatModules.rbxm"
       },
 
       "ChatScript": {
-        "$path": "assets/ChatScript.rbxm"
+        "$path": "models/ChatScript.rbxm"
       },
 
       "ChatServiceRunner": {
-        "$path": "assets/ChatServiceRunner.rbxm"
+        "$path": "models/ChatServiceRunner.rbxm"
       },
 
       "ClientChatModules": {
-        "$path": "assets/ClientChatModules.rbxm"
+        "$path": "models/ClientChatModules.rbxm"
       }
     },
 
@@ -86,29 +86,38 @@
     "Workspace": {
       "$className": "Workspace",
       "Map": {
-        "$path": "assets/Map.rbxm"
+        "$path": "models/Map.rbxm"
       }
     },
 
     "Lighting": {
       "$className": "Lighting",
       "$properties": {
+        "Ambient": [0.17647058823, 0.58039215686, 0.14117647058],
+        "Brightness": 0.75,
         "GeographicLatitude": 21,
+        "GlobalShadows": true,
+        "EnvironmentDiffuseScale": 1,
         "ExposureCompensation": 0.05,
         "ClockTime": 12,
+        "ShadowSoftness": 0.5,
         "Technology": "ShadowMap"
       },
 
       "Bloom" : {
-        "$path": "assets/Bloom.rbxm"
+        "$path": "models/Bloom.rbxm"
       },
 
       "Dark Skies" : {
-        "$path": "assets/Dark Skies.rbxm"
+        "$path": "models/Dark Skies.rbxm"
       },
 
       "Atmosphere": {
-        "$path": "assets/Atmosphere.rbxm"
+        "$path": "models/Atmosphere.rbxm"
+      },
+
+      "ColorCorrection": {
+        "$path": "models/ColorCorrection.rbxm"
       }
     },
 

@@ -1,3 +1,5 @@
+local RunService = game:GetService("RunService")
+
 local UserPermissions = {}
 
 local GROUP_ID = 13352380
@@ -63,6 +65,10 @@ function UserPermissions:GetUserRights(player)
 end
 
 function UserPermissions:HasRight(player, right)
+	if RunService:IsStudio() then
+		return true
+	end
+
 	if not table.find(self.Rights, right) then
 		error("That user right does not exist!", 2)
 	end

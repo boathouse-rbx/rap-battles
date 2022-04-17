@@ -13,23 +13,23 @@ local GetStrokeSize = require(Shared.Util.GetStrokeSize)
 local New = Fusion.New
 local Children = Fusion.Children
 local Computed = Fusion.Computed
+local State = Fusion.State
 
 local function Status(props)
 	local MusicService = Knit.GetService("MusicService")
+	local text = State("Now Playing - Unknown")
+
+	MusicService.Playing:Connect(function(name)
+		if not name then
+			text:set("Now Playing - Unknown")
+		end
+
+		text:set("Now Playing - " .. name)
+	end)
 
 	return {
 		New "TextLabel" {
-			Text = Computed(function()
-				local success, result = MusicService:GetSoundName():await()
-				MusicService.Playing:Connect(function(name)
-					return "Now Playing - " .. name
-				end)
-
-				if success then
-					return "Now Playing - " .. if result then result else "Unknown"
-				end
-			end),
-
+			Text = text,
 			Font = Enum.Font.GothamBlack,
 			TextColor3 = Color3.fromRGB(255, 255, 255),
 			TextSize = props.TextSize,

@@ -32,11 +32,11 @@ function ProximityController:SetupDJ()
 	local info = Global.PROXIMITY_PROMPTS.DJ
 
 	local Map = workspace:WaitForChild("Map")
-	local Stage = Map:WaitForChild("Stage")
-	local DJStand = Stage:WaitForChild("DJStand")
+	local DJStand = Map:WaitForChild("DJStand")
+	local BaseStand = DJStand:WaitForChild("BaseStand")
 
 	local djProximity = self:CreatePrompt(
-		DJStand,
+		BaseStand,
 		info.TITLE,
 		info.DESCRIPTION,
 		info.DISTANCE,
@@ -64,6 +64,10 @@ function ProximityController:KnitStart()
 		if id == Global.PRODUCTS.GAMEPASSES.DJ then
 			self:SetupDJ()
 		end
+	end)
+
+	self.DJProximityOpened:Connect(function(toggle)
+		self.DJControlsOpen = toggle
 	end)
 end
 

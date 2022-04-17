@@ -24,12 +24,12 @@ local function startServer()
 
 		-- Shut down server if the game won't load
 		local function kickPlayer(player)
-			player:Kick("A fatal error occurred while starting the game and the server has been shut down, please rejoin.")
+			player:Kick("A fatal error occurred while starting the game and the server has been shut down, please rejoin. If this keeps happening, please report it in the community server.")
 		end
 
 		Players.PlayerAdded:Connect(kickPlayer)
 		for _, player in ipairs(Players:GetPlayers()) do
-			kickPlayer(player)
+			coroutine.wrap(kickPlayer)(player)
 		end
 	end)
 end

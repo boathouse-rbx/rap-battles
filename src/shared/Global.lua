@@ -12,8 +12,16 @@ Global.PLACES = { -- {PRODUCTION|INTEGRATION|DEBUG_ENABLED_IN}
 -- BADGES --
 ------------
 Global.BADGES = {
-	WELCOME = 2125579682
+	WELCOME = 2125579682,
+	MET_DEVELOPER = 2125643917
 }
+
+----------
+-- DATA --
+----------
+
+Global.PROFILE_NAME = "rap.battles"
+Global.PLAYER_PROFILE_NAME = "player_"
 
 --------------
 -- PRODUCTS --
@@ -23,6 +31,7 @@ Global.PRODUCTS = {
 	GAMEPASSES = {
 		EXTRA_RAP_TIME = 35516004,
 		DJ = 35515748,
+		RAINBOW_CHAT = 35994151,
 	},
 
 	DEVELOPER_PRODUCT = {
@@ -34,6 +43,32 @@ Global.PRODUCTS = {
 -- GENERAL --
 -------------
 
+Global.MIC_SKINS = {
+	{
+		Name = "Default",
+		Texture = "rbxassetid://9385010664",
+		MinWins = 0,
+	},
+
+	{
+		Name = "Metal",
+		Texture = "rbxassetid://8735849628",
+		MinWins = 3,
+	},
+
+	{
+		Name = "Blue",
+		Texture = "rbxassetid://6246710687",
+		MinWins = 6,
+	},
+
+	{
+		Name = "Red",
+		Texture = "rbxassetid://1489069889",
+		MinWins = 10,
+	},
+}
+
 Global.PROXIMITY_PROMPTS = {
 	DJ = {
 		TITLE = "Open",
@@ -42,6 +77,120 @@ Global.PROXIMITY_PROMPTS = {
 		DURATION = 0.5,
 		KEY = Enum.KeyCode.E
 	}
+}
+
+Global.GROUP_RANKS = {
+	Developer = {
+		Name = "Developer 🛠️",
+		isRainbow = true,
+		MinWins = math.huge,
+		MaxWins = math.huge,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#b92b27"),
+			Color3.fromHex("#1565C0")
+		),
+	},
+
+	Moderator = {
+		Name = "Moderator 🔨",
+		isRainbow = true,
+		MinWins = math.huge,
+		MaxWins = math.huge,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#b92b27"),
+			Color3.fromHex("#1565C0")
+		),
+	},
+
+	Friend = {
+		Name = "Friend 🤝",
+		isRainbow = true,
+		MinWins = math.huge,
+		MaxWins = math.huge,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#b92b27"),
+			Color3.fromHex("#1565C0")
+		),
+	}
+}
+
+Global.RANKS = {
+	{
+		Name = "Rookie 💣",
+		isRainbow = false,
+		MinWins = 0,
+		MaxWins = 5,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#FF512F"),
+			Color3.fromHex("#F09819")
+		)
+	},
+
+	{
+		Name = "Talented 💡",
+		isRainbow = false,
+		MinWins = 5,
+		MaxWins = 10,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#e65c00"),
+			Color3.fromHex("#F9D423")
+		),
+	},
+
+	{
+		Name = "Experienced 💎",
+		isRainbow = false,
+		MinWins = 10,
+		MaxWins = 30,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#00C6FF"),
+			Color3.fromHex("#0072FF")
+		)
+	},
+
+	{
+		Name = "Underground 🎤",
+		isRainbow = false,
+		MinWins = 30,
+		MaxWins = 100,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#bdc3c7"),
+			Color3.fromHex("#2c3e50")
+		),
+	},
+
+	{
+		Name = "Famous 📷",
+		isRainbow = false,
+		MinWins = 100,
+		MaxWins = 500,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#141E30"),
+			Color3.fromHex("#243B55")
+		),
+	},
+
+	{
+		Name = "Hall of Famer 🔥",
+		isRainbow = true,
+		MinWins = 500,
+		MaxWins = 1000,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#ee0979"),
+			Color3.fromHex("#ff6a00")
+		),
+	},
+
+	{
+		Name = "G.O.A.T 🐐",
+		isRainbow = true,
+		MinWins = 1000,
+		MaxWins = 5000,
+		Gradient = ColorSequence.new(
+			Color3.fromHex("#b92b27"),
+			Color3.fromHex("#1565C0")
+		),
+	},
 }
 
 Global.TEMPORARY_LOBBY_MESSAGE = "Servers are restarting, you will be teleported back in a moment."
@@ -53,18 +202,22 @@ Global.UI = {
 	DJ_ICON = "rbxassetid://9145009250",
 	VINYL_ICON = "rbxassetid://9146332166",
 
-	TYPEWRITER_TWEENINFO = TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 1),
+	TYPEWRITER_TWEENINFO = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 1),
 	CLOSE_BUTTON_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
 	WINDOW_SIZE_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
-	VINYL_ROTATION_TWEEN_INFO = TweenInfo.new(5)
+	CHAT_DISPLAY_POSITION_TWEENINFO = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
+	VINYL_ROTATION_TWEEN_INFO = TweenInfo.new(5),
+
+	NOTIFICATION_TIME = 5,
+	NOTIFICATION_DELAY_ADDITION = 0.75,
+	NOTIFICATION_CHANGE_TIME = 0.1
 }
 
 Global.ROUND_MESSAGES = {
 	ROUND_BEGIN = "%s (%s) will be battling %s (%s)",
-	ROUND_TURN_END = "%s (%s) finished rapping, it is now %s's (%s) turn.",
 	IDLE = "The next round will begin shortly...",
-	RAPPING = "%s (%s) is rapping, %d seconds left.",
-	FINISHED_RAPPING = "%s (%s) has finished! Lets see how %s (%s) does...",
+	RAPPING = "%s (%s) is rapping, %s seconds left.",
+	TURN_ENDED = "%s (%s) finished! It is now over to %s (%s)",
 
 	WON = {
 		LANDSLIDE = "%s (%s) has won by a MILE!",
@@ -73,23 +226,27 @@ Global.ROUND_MESSAGES = {
 	}
 }
 
+Global.ROUND_TIMES = {
+	DEFAULT_LENGTH = 60,
+	EXTENDED_LENGTH = 90,
+}
+
 Global.ROUND_MUSIC = {
 	ROUND_BEATS = {
-		{ ID = "rbxassetid://1839092699", Name = "Scratch Lazer" },
-		{ ID = "rbxassetid://1836497150", Name = "Beat The Rap" },
-		{ ID = "rbxassetid://9040153041" },
-		{ ID = "rbxassetid://1836402682" },
-		{ ID = "rbxassetid://9063855475" },
+		-- 1839092699,
+		1836497150,
+		1846119637,
+		9040153041,
+		1836402682,
 	},
 
 	VICTORY = {
-		{ ID = "rbxassetid://160737154", Name = "Victory" },
-		{ ID = "rbxassetid://7082075631", Name = "Victory" }
+		160737154,
+		7082075631
 	},
 
-	LOSS = { ID = "rbxassetid://190705984", Name = "Lost"},
-
-	FINISHED_BEAT = "rbxassetid://1836513791",
+	LOSS = 190705984,
+	FINISHED_BEAT = 1836513791,
 }
 
 ----------------
