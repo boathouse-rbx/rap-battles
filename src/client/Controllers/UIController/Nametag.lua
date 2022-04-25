@@ -8,7 +8,7 @@ local Shared = Knit.Shared
 local Global = Knit.Global
 
 local New = Fusion.New
-local State = Fusion.State
+local Value = Fusion.Value
 local Children = Fusion.Children
 local Tween = Fusion.Tween
 
@@ -16,7 +16,7 @@ local UPDATE_RAINBOW_NAME = "UPDATE_RAINBOW_NAMETAG"
 local RAINBOW_TIME = 5
 
 local function Nametag(props)
-	local rainbowColor = State(
+	local rainbowColor = Value(
 		ColorSequence.new(Color3.new(), Color3.new())
 	)
 

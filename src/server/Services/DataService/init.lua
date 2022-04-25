@@ -12,7 +12,9 @@ local DataService = Knit.CreateService {
 	Name = "DataService",
 	Client = {},
 
-	PlayerAdded = Signal.new()
+	PlayerAdded = Signal.new(),
+
+	WinsChanged = Signal.new(),
 }
 
 local UserPermissions = require(Shared.UserPermissions)
@@ -21,6 +23,18 @@ local DataTemplate = require(script.DataTemplate)
 
 local ProfileStore = ProfileService.GetProfileStore(Global.PROFILE_NAME, DataTemplate)
 local profiles = {}
+
+local function getServerType()
+	if game.PrivateServerId ~= "" then
+		if game.PrivateServerOwnerId ~= 0 then
+			return "VIPServer"
+		else
+			return "ReservedServer"
+		end
+	else
+		return "StandardServer"
+	end
+end
 
 local function onProfileLoaded(player, profile)
 	profile.Data.LoginTimes += 1
@@ -66,8 +80,16 @@ function DataService:SetSkin(player, newSkin)
 end
 
 function DataService:GiveWin(player)
+	if getServerType() == "VIPServer" then return end
+
+	local leaderstats = player:FindFirstChild("leaderstats")
+	local wins = leaderstats:FindFirstChild("Wins")
 	local profile = DataService:GetProfile(player)
 	profile.Data.Wins += 1
+
+	if wins then
+		wins.Value = profile.Data.Wins
+	end
 end
 
 function DataService:GetSkin(player)
@@ -77,7 +99,7 @@ end
 
 function DataService:GetWins(player)
 	local profile = DataService:GetProfile(player)
-	return 2000 --profile.Data.Wins or  -- DO CHANGE THIS BEFORE RELEASE LOL
+	return profile.Data.Wins
 end
 
 function DataService.Client:GetWins(player)

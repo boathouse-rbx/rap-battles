@@ -9,23 +9,21 @@ local Global = Knit.Global
 local GetStrokeSize = require(Shared.Util.GetStrokeSize)
 
 local New = Fusion.New
-local State = Fusion.State
+local Value = Fusion.Value
 local Children = Fusion.Children
 local Tween = Fusion.Tween
+local Computed = Fusion.Computed
 
 local DEFAULT_CLOSED_POSITION = UDim2.fromScale(0.5, 1.2)
 local DEFAULT_OPEN_POSITION = UDim2.fromScale(0.5, 0.8)
 
 local function ChatDisplay(props)
-	local RoundController = Knit.GetController("RoundController")
-
-	local text = State("")
-	local maxVisibleGraphemes = State(0)
-	local tweenInfo = State(
-		TweenInfo.new(3, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 1)
+	local text = Value("")
+	local maxVisibleGraphemes = Value(0)
+	local position = Value(DEFAULT_CLOSED_POSITION)
+	local info = Value(
+		TweenInfo.new(1, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
 	)
-
-	local position = State(DEFAULT_CLOSED_POSITION)
 
 	props.OpenEvent:Connect(function()
 		position:set(DEFAULT_OPEN_POSITION)
@@ -37,20 +35,16 @@ local function ChatDisplay(props)
 
 	props.ChattedEvent:Connect(function(message)
 		local length = utf8.len(message)
+		local newInfo = TweenInfo.new(
+			utf8.len(message) / 10,
+			Enum.EasingStyle.Linear,
+			Enum.EasingDirection.Out
+		)
+
 		maxVisibleGraphemes:set(0)
 		text:set(message)
 		maxVisibleGraphemes:set(length)
-
-		print(message)
-
-		tweenInfo:set(
-			TweenInfo.new(
-				length / 10,
-				Enum.EasingStyle.Linear,
-				Enum.EasingDirection.Out,
-				1
-			)
-		)
+		info:set(newInfo)
 	end)
 
 	return {
@@ -72,7 +66,7 @@ local function ChatDisplay(props)
 
 				New "TextLabel" {
 					Text = text,
-					MaxVisibleGraphemes = Tween(maxVisibleGraphemes, tweenInfo:get()),
+					MaxVisibleGraphemes = Tween(maxVisibleGraphemes, info),
 
 					TextWrapped = true,
 					BackgroundTransparency = 1,

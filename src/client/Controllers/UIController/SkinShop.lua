@@ -9,7 +9,7 @@ local Assets = Knit.Assets
 
 local New = Fusion.New
 local Children = Fusion.Children
-local ComputedPairs = Fusion.ComputedPairs
+local ForValues = Fusion.ForValues
 
 local SkinCell = require(script.Parent.SkinCell)
 
@@ -33,7 +33,7 @@ local function SkinShop(props)
 					CellPadding = props.CellPadding or UDim2.fromOffset(5, 5)
 				},
 
-				ComputedPairs(props.List, function(_, skin)
+				ForValues(props.List, function(skin)
 					local text = skin.MinWins .. " Wins"
 					local hoverTextEnabled = true
 

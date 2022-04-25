@@ -28,6 +28,7 @@ local lastNotification = ""
 
 function RoundController:KnitInit()
 	self.RoundService = Knit.GetService("RoundService")
+	self.UIController = Knit.GetController("UIController")
 end
 
 function RoundController:QueueNotifications(notifications)
@@ -42,8 +43,16 @@ function RoundController:QueueNotifications(notifications)
 	end
 end
 
-function RoundController:SendNotification(message)
-	self.NotificationSent:Fire(message)
+function RoundController:OpenVotingDisplay(...)
+	self.UIController.OpenVotingDisplayEvent:Fire(...)
+end
+
+function RoundController:CloseVotingDisplay()
+	self.UIController.CloseVotingDisplayEvent:Fire()
+end
+
+function RoundController:SendNotification(...)
+	self.NotificationSent:Fire(...)
 end
 
 function RoundController:DeleteNotification()
@@ -52,29 +61,38 @@ end
 
 function RoundController:KnitStart()
 	self:SendNotification(Global.ROUND_MESSAGES.IDLE)
-
-	self.RoundService.SendNotification:Connect(function(message)
-		self:SendNotification(message)
+	self.RoundService.SendNotification:Connect(function(...)
+		self:SendNotification(...)
 	end)
 
 	self.RoundService.DeleteNotification:Connect(function()
 		self:DeleteNotification()
 	end)
 
+	self.RoundService.OpenVotingDisplay:Connect(function(...)
+		self:OpenVotingDisplay(...)
+	end)
+
+	self.RoundService.CloseVotingDisplay:Connect(function()
+		self:CloseVotingDisplay()
+	end)
+
 	self.RoundService.OpenChatDisplay:Connect(function()
-		isChatDisplayOpen = true
-		self.OpenChatDisplay:Fire()
+		for _ = 1, 5 do
+			self.OpenChatDisplay:Fire()
+			task.wait(1)
+		end
 	end)
 
 	self.RoundService.CloseChatDisplay:Connect(function()
-		isChatDisplayOpen = false
-		self.CloseChatDisplay:Fire()
+		for _ = 1, 5 do
+			self.CloseChatDisplay:Fire()
+			task.wait(1)
+		end
 	end)
 
 	self.RoundService.SendChatDisplayMessage:Connect(function(message)
-		if isChatDisplayOpen then
-			self.Chatted:Fire(message)
-		end
+		self.Chatted:Fire(message)
 	end)
 end
 

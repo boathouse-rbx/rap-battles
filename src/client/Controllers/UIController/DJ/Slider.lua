@@ -14,12 +14,12 @@ local GetStrokeSize = require(Shared.Util.GetStrokeSize)
 local New = Fusion.New
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
-local State = Fusion.State
+local Value = Fusion.Value
 local Tween = Fusion.Tween
 local OnChange = Fusion.OnChange
 
 local function Slider(props)
-	local nozzle = State(
+	local nozzle = Value(
 		New "ImageButton" {
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundColor3 = Color3.fromRGB(26, 26, 26),
@@ -34,7 +34,7 @@ local function Slider(props)
 		}
 	)
 
-	local container = State(
+	local container = Value(
 		New "Frame" {
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundColor3 = Color3.fromRGB(33, 33, 33),

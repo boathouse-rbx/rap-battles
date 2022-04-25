@@ -12,29 +12,29 @@ local New = Fusion.New
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
 local Tween = Fusion.Tween
-local State = Fusion.State
-local Compat = Fusion.Compat
+local Value = Fusion.Value
+local Observer = Fusion.Observer
 local Computed = Fusion.Computed
 
 local GetStrokeSize = require(Shared.Util.GetStrokeSize)
 local ViewportModel = require(Shared.Util.ViewportModel)
 
-local TWEEN_INFO = TweenInfo.new(1, Enum.EasingStyle.Circular, Enum.EasingDirection.Out, 1)
+local TWEEN_INFO = TweenInfo.new(1, Enum.EasingStyle.Circular, Enum.EasingDirection.Out)
 local INITIAL_OFFSET = Vector2.new(-2, 0)
 local OFFSET_GOAL = Vector2.new(2, 0)
 
 -- many sacrifices were made.
 
 local function SkinCell(props)
-	local offset = State(INITIAL_OFFSET)
-	local shouldAnimate = State(true)
-	local offsetCompat = Compat(offset)
-	local text = State(props.Text)
+	local offset = Value(INITIAL_OFFSET)
+	local shouldAnimate = Value(true)
+	local text = Value(props.Text)
+	local offsetObserver = Observer(offset)
 
 	local clone = props.Model:Clone()
 	clone.PrimaryPart.TextureID = props.Texture
 
-	local viewportFrameChildren = State({
+	local viewportFrameChildren = Value({
 		clone,
 
 		New "UICorner" {
@@ -81,7 +81,7 @@ local function SkinCell(props)
 		FieldOfView = 70,
 	}
 
-	local viewport = State({
+	local viewport = Value({
 		New "ViewportFrame" {
 			ZIndex = 2,
 			BackgroundColor3 = Color3.fromRGB(33, 33, 33),
@@ -141,7 +141,7 @@ local function SkinCell(props)
 		camera.CFrame = CFrame.new(cframe.Position) * orientation * CFrame.new(0, 0, distance * 15)
 	end)
 
-	offsetCompat:onChange(function()
+	offsetObserver:onChange(function()
 		if offset:get() == OFFSET_GOAL then
 			task.wait(2.5)
 			offset:set(INITIAL_OFFSET)

@@ -67,6 +67,20 @@ function TopbarController:CreateButton(text, isSelectable)
 	return icon
 end
 
+function TopbarController:TypewriteDelete(icon, interval, message)
+	message = message or statusText
+
+	for i = #message, 0, -1 do
+		icon:setLabel(
+			string.sub(message, 0, i)
+		)
+
+		task.wait(interval)
+	end
+
+	statusText = ""
+end
+
 function TopbarController:Typewrite(icon, message, interval, shouldAnimate, shouldDeleteOnCompletion)
 	if not shouldAnimate then icon:setLabel(message) return end
 
@@ -78,23 +92,13 @@ function TopbarController:Typewrite(icon, message, interval, shouldAnimate, shou
 		task.wait(interval)
 	end
 
-	if shouldDeleteOnCompletion then
-		self:TypewriteDelete(icon, interval)
-	end
+	task.wait(interval * utf8.len(message))
 
 	statusText = message
-end
 
-function TopbarController:TypewriteDelete(icon, interval)
-	for i = #statusText, 0, -1 do
-		icon:setLabel(
-			string.sub(statusText, 0, i)
-		)
-
-		task.wait(interval)
+	if shouldDeleteOnCompletion then
+		self:TypewriteDelete(icon, interval, statusText)
 	end
-
-	statusText = ""
 end
 
 function TopbarController:UpdateServerRegion(icon)

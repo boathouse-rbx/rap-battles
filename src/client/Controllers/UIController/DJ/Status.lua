@@ -13,11 +13,11 @@ local GetStrokeSize = require(Shared.Util.GetStrokeSize)
 local New = Fusion.New
 local Children = Fusion.Children
 local Computed = Fusion.Computed
-local State = Fusion.State
+local Value = Fusion.Value
 
 local function Status(props)
 	local MusicService = Knit.GetService("MusicService")
-	local text = State("Now Playing - Unknown")
+	local text = Value("Now Playing - Unknown")
 
 	MusicService.Playing:Connect(function(name)
 		if not name then

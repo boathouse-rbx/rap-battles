@@ -202,10 +202,11 @@ Global.UI = {
 	DJ_ICON = "rbxassetid://9145009250",
 	VINYL_ICON = "rbxassetid://9146332166",
 
-	TYPEWRITER_TWEENINFO = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In, 1),
-	CLOSE_BUTTON_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
-	WINDOW_SIZE_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
-	CHAT_DISPLAY_POSITION_TWEENINFO = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1),
+	TYPEWRITER_TWEENINFO = TweenInfo.new(0.5, Enum.EasingStyle.Linear, Enum.EasingDirection.In),
+	CLOSE_BUTTON_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+	WINDOW_SIZE_TWEENINFO = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+	CHAT_DISPLAY_POSITION_TWEENINFO = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
+	VOTING_DISPLAY_POSITION_TWEENINFO = TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
 	VINYL_ROTATION_TWEEN_INFO = TweenInfo.new(5),
 
 	NOTIFICATION_TIME = 5,
@@ -216,19 +217,23 @@ Global.UI = {
 Global.ROUND_MESSAGES = {
 	ROUND_BEGIN = "%s (%s) will be battling %s (%s)",
 	IDLE = "The next round will begin shortly...",
-	RAPPING = "%s (%s) is rapping, %s seconds left.",
-	TURN_ENDED = "%s (%s) finished! It is now over to %s (%s)",
+	RAPPING = "%s (%s) is rapping, %s left.",
+	TURN_ENDED = "%s (%s) finished! Passing over the mic...",
+	ROUND_ENDED = "This round has ended! Casting the votes...",
 
 	WON = {
 		LANDSLIDE = "%s (%s) has won by a MILE!",
 		MARGINAL = "%s (%s) has won, it was a close fight though!",
-		REGULAR = "%s (%s) has won."
+		REGULAR = "%s (%s) has won.",
+		STALEMATE = "It's a stalemate! Nobody will win."
 	}
 }
 
 Global.ROUND_TIMES = {
+	VOTING_TIME = 15,
+	TURNS = 1, -- 4
 	DEFAULT_LENGTH = 60,
-	EXTENDED_LENGTH = 90,
+	EXTENDED_LENGTH = 1, -- 90
 }
 
 Global.ROUND_MUSIC = {

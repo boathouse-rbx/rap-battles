@@ -13,7 +13,7 @@ local GetStrokeSize = require(Shared.Util.GetStrokeSize)
 local New = Fusion.New
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
-local State = Fusion.State
+local Value = Fusion.Value
 local Tween = Fusion.Tween
 local OnChange = Fusion.OnChange
 
@@ -35,26 +35,26 @@ local TEXT_SIZE_DIVISOR = math.pi / 2
 local TITLE_TEXT_SIZE_DIVISOR = 1.1
 
 local function Window(props)
-	local windowEnabled = State(if not props.shouldOpen then true else false)
-	local windowSize = State(if props.shouldOpen then CLOSED_WINDOW_SIZE else DEFAULT_WINDOW_SIZE)
-	local windowStrokeSize = State(if props.shouldOpen then CLOSED_STROKE_SIZE else DEFAULT_STROKE_SIZE)
-	local windowPosition = State(props.WindowPosition or DEFAULT_WINDOW_POSITION)
-	local closeButtonPosition = State(INITIAL_BUTTON_POSITION)
+	local windowEnabled = Value(if not props.shouldOpen then true else false)
+	local windowSize = Value(if props.shouldOpen then CLOSED_WINDOW_SIZE else DEFAULT_WINDOW_SIZE)
+	local windowStrokeSize = Value(if props.shouldOpen then CLOSED_STROKE_SIZE else DEFAULT_STROKE_SIZE)
+	local windowPosition = Value(props.WindowPosition or DEFAULT_WINDOW_POSITION)
+	local closeButtonPosition = Value(INITIAL_BUTTON_POSITION)
 
-	local closeButtonTextSize = State(30)
-	local closeButtonText = State(if props.shouldOpen then EMPTY_STRING else "X")
+	local closeButtonTextSize = Value(30)
+	local closeButtonText = Value(if props.shouldOpen then EMPTY_STRING else "X")
 
-	local titleTextSize = State(30)
+	local titleTextSize = Value(30)
 
-	local isDragging = State(false)
-	local dragInput = State(nil)
-	local dragStart = State(nil)
-	local dragStartPosition = State(nil)
+	local isDragging = Value(false)
+	local dragInput = Value(nil)
+	local dragStart = Value(nil)
+	local dragStartPosition = Value(nil)
 
 	if props.callbackEvent then
 		props.callbackEvent:Connect(function(toggle)
 			windowEnabled:set(toggle)
-	
+
 			if windowEnabled:get() then
 				windowSize:set(props.Size or DEFAULT_WINDOW_SIZE)
 				windowStrokeSize:set(DEFAULT_STROKE_SIZE)

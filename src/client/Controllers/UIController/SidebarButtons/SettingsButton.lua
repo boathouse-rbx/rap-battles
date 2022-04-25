@@ -12,18 +12,18 @@ local GetStrokeSize = require(Shared.Util.GetStrokeSize)
 local New = Fusion.New
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
-local State = Fusion.State
+local Value = Fusion.Value
 local Tween = Fusion.Tween
 local Computed = Fusion.Computed
 
-local SETTINGS_TWEEN_INFO = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 1)
+local SETTINGS_TWEEN_INFO = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
 
 local SETTINGS_ICON_START_ANGLE = 0
 local SETTINGS_ICON_TARGET_ANGLE = 360 / 6 -- cog has 6 teeth
 
 local function SettingsButton(props)
-	local settingsToggle = State(false)
-	local settingsIconRotation = State(SETTINGS_ICON_START_ANGLE)
+	local settingsToggle = Value(false)
+	local settingsIconRotation = Value(SETTINGS_ICON_START_ANGLE)
 
 	local UIController = Knit.GetController("UIController")
 

@@ -44,6 +44,7 @@ local SOUND_TWEEN_INFO = TweenInfo.new(math.pi, Enum.EasingStyle.Sine, Enum.Easi
 
 function MusicService:KnitInit()
 	self.GamepassService = Knit.GetService("GamepassService")
+	self.RoundService = Knit.GetService("RoundService")
 end
 
 function MusicService:AddToQueue(id)
@@ -78,17 +79,6 @@ function MusicService:Play(id: number, length: number?)
 	self.Sound.Ended:Connect(function()
 		onPlayerAdded:Disconnect()
 		MusicService.Client.Ended:FireAll()
-	end)
-
-	task.spawn(function()
-		while self.Sound.Playing do
-			if self.Sound.TimePosition >= length then
-				self:Stop(true)
-				break
-			end
-
-			task.wait()
-		end
 	end)
 end
 
@@ -152,6 +142,11 @@ end
 function MusicService:HardStop()
 	self.Sound:Stop()
 	self.Sound.SoundId = ""
+end
+
+function MusicService:ConvertID(id)
+	local omitted = string.gsub(id, "rbxassetid://", "")
+	return tonumber(omitted)
 end
 
 function MusicService:GetSoundId()
@@ -247,7 +242,21 @@ end
 
 function MusicService:KnitStart()
 	self:CreateSound()
-	self:Play(Global.ROUND_MUSIC.ROUND_BEATS[1], 120)
+
+	local function getRandomSound()
+		local list = Global.ROUND_MUSIC.ROUND_BEATS
+		return list[math.random(1, #list)]
+	end
+
+	self.RoundService.TurnBegan:Connect(function(player)
+		local sound = getRandomSound()
+		local length = self.RoundService:GetRapTime(player)
+		self:Play(sound, length)
+	end)
+
+	self.RoundService.TurnEnded:Connect(function()
+		self:Stop(true)
+	end)
 end
 
 return MusicService

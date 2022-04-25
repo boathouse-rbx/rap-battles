@@ -11,13 +11,13 @@ local Global = Knit.Global
 local New = Fusion.New
 local Children = Fusion.Children
 local OnEvent = Fusion.OnEvent
-local State = Fusion.State
+local Value = Fusion.Value
 local Tween = Fusion.Tween
 
 local DEFAULT_ROTATION = 1
 
 local function Vinyl(props)
-	local rotation = State(DEFAULT_ROTATION)
+	local rotation = Value(DEFAULT_ROTATION)
 
 	RunService:BindToRenderStep("UPDATE_VINYL_ROTATION", 0, function()
 		rotation:set(rotation:get() + 1)

@@ -80,9 +80,14 @@ function ToolService:KnitStart()
 	local DataService = Knit.GetService("DataService")
 
 	local function onPlayerAdded(player)
-		local skin = DataService:GetSkin(player) or Global.MIC_SKINS[1].Texture
 		self:GiveMicrophone(player)
-		self:ChangeSkin(player, skin)
+
+		if not Global.ENVIRONMENT == "production" then
+			self:ChangeSkin(player, Global.MIC_SKINS[1].Texture)
+		else
+			local skin = DataService:GetSkin(player) or Global.MIC_SKINS[1].Texture
+			self:ChangeSkin(player, skin)
+		end
 	end
 
 	for _, player in ipairs(Players:GetPlayers()) do

@@ -22,7 +22,7 @@ local UserPermissions = require(Shared.UserPermissions)
 
 local New = Fusion.New
 local Children = Fusion.Children
-local State = Fusion.State
+local Value = Fusion.Value
 local Computed = Fusion.Computed
 
 local UIController = Knit.CreateController({
@@ -30,6 +30,8 @@ local UIController = Knit.CreateController({
 
 	SettingsToggled = Signal.new(),
 	ShopToggled = Signal.new(),
+	OpenVotingDisplayEvent = Signal.new(),
+	CloseVotingDisplayEvent = Signal.new(),
 })
 
 local DJ = require(script.DJ)
@@ -38,6 +40,7 @@ local Window = require(script.Window)
 local Nametag = require(script.Nametag)
 local ChatDisplay = require(script.ChatDisplay)
 local SkinShop = require(script.SkinShop)
+local Voting = require(script.Voting)
 
 local Vinyl = DJ.Vinyl
 local Status = DJ.Status
@@ -53,14 +56,15 @@ function UIController:KnitInit()
 	self.GamepassService = Knit.GetService("GamepassService")
 	self.MusicService = Knit.GetService("MusicService")
 	self.DataService = Knit.GetService("DataService")
+	self.RoundService = Knit.GetService("RoundService")
 	self.TeleportController = Knit.GetController("TeleportController")
 	self.ProximityController = Knit.GetController("ProximityController")
 	self.RoundController = Knit.GetController("RoundController")
 end
 
 function UIController:KnitStart()
-	local shopWindowEnabled = State(false)
-	local djWindowEnabled = State(false)
+	local shopWindowEnabled = Value(false)
+	local djWindowEnabled = Value(false)
 
 	UIController.ShopToggled:Connect(function(toggle)
 		shopWindowEnabled:set(toggle)
@@ -86,12 +90,15 @@ function UIController:KnitStart()
 	end)
 
 	local function setupNametag(player)
-		local gradient = State(nil)
-		local rankName = State(nil)
-		local isRainbow = State(false)
+		local gradient = Value(nil)
+		local rankName = Value(nil)
+		local isRainbow = Value(false)
 
-		local NAME = string.format("%s (%s)", Player.DisplayName, Player.Name)
+		local NAME = string.format("%s (%s)", player.DisplayName, player.Name)
 		local worked, rank = self.DataService:GetRank():await()
+		local character = player.Character or player.CharacterAdded:Wait()
+		local humanoid = character:WaitForChild("Humanoid")
+		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 
 		if worked then
 			gradient:set(rank.Gradient)
@@ -99,7 +106,7 @@ function UIController:KnitStart()
 			isRainbow:set(rank.isRainbow)
 
 			return Nametag {
-				Adornee = player.Character:WaitForChild("Head"),
+				Adornee = character:WaitForChild("Head"),
 				Name = NAME,
 				Rank = rankName,
 				Gradient = gradient,
@@ -108,23 +115,11 @@ function UIController:KnitStart()
 		end
 	end
 
-	setupNametag(Player)
+	for _, player in ipairs(Players:GetPlayers()) do
+		setupNametag(player)
+	end
 
-	local nametags = {}
-
-	Players.PlayerAdded:Connect(function(player)
-		coroutine.wrap(function()
-			nametags[player] = setupNametag(player)
-		end)
-	end)
-
-	Players.PlayerRemoving:Connect(function(player)
-		local tag = nametags[player]
-		if tag then
-			tag.Nametag:Destroy()
-			nametags[player] = nil
-		end
-	end)
+	Players.PlayerAdded:Connect(setupNametag)
 
 	New "ScreenGui" {
 		Parent = Knit.Player:WaitForChild("PlayerGui", math.huge),
@@ -151,13 +146,14 @@ function UIController:KnitStart()
 			DJButton {
 				OnActivation = function(toggled)
 					local success, ownsGamepass = self.GamepassService:OwnsGamepass(Global.PRODUCTS.GAMEPASSES.DJ, true):await()
+					local playingSuccess, isPlaying = self.RoundService:IsPlaying():await()
 
 					local Map = workspace:WaitForChild("Map")
 					local DJStand = Map:WaitForChild("DJStand")
 					local BaseStand = DJStand:WaitForChild("BaseStand")
 					local Spawns = Map:WaitForChild("Spawns")
 
-					if success then
+					if success and playingSuccess and not isPlaying then
 						if toggled and ownsGamepass then
 							self.TeleportController:Teleport(BaseStand.CFrame)
 						elseif not toggled and ownsGamepass then
@@ -172,6 +168,11 @@ function UIController:KnitStart()
 				OpenEvent = self.RoundController.OpenChatDisplay,
 				CloseEvent = self.RoundController.CloseChatDisplay,
 				ChattedEvent = self.RoundController.Chatted,
+			},
+
+			Voting {
+				OpenEvent = UIController.OpenVotingDisplayEvent,
+				CloseEvent = UIController.CloseVotingDisplayEvent
 			},
 
 			Window {
