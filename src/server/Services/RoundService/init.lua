@@ -273,6 +273,30 @@ function RoundService:StartRound()
 	local firstPlayer = players[1]
 	local secondPlayer = players[2]
 
+	local onRemoving = Players.PlayerRemoving:Connect(function(player)
+		if player == firstPlayer then
+			local formatted = string.format(
+				Global.ROUND_MESSAGES.WON.LEFT,
+				player.DisplayName,
+				player.Name
+			)
+
+			self:SendNotification(formatted, true, true, false)
+			self.DataService:GiveWin(secondPlayer)
+			endGame()
+		elseif player == secondPlayer then
+			local formatted = string.format(
+				Global.ROUND_MESSAGES.WON.LEFT,
+				player.DisplayName,
+				player.Name
+			)
+
+			self:SendNotification(formatted, true, true, false)
+			self.DataService:GiveWin(firstPlayer)
+			endGame()
+		end
+	end)
+
 	RoundService.Playing = {
 		firstPlayer,
 		secondPlayer
@@ -320,13 +344,15 @@ function RoundService:StartRound()
 								player.Name
 							)
 
-							self:SendNotification(formattedMessage, true, true, true)
+							self:SendNotification(formattedMessage, true, true, false)
 							self.DataService:GiveWin(player)
 
 							endGame()
+							onRemoving:Disconnect()
 						else
-							self:SendNotification(Global.ROUND_MESSAGES.WON.STALEMATE, true, true, true)
+							self:SendNotification(Global.ROUND_MESSAGES.WON.STALEMATE, true, true, false)
 							endGame()
+							onRemoving:Disconnect()
 						end
 
 						break
@@ -413,7 +439,13 @@ function RoundService:TallyVotes()
 end
 
 function RoundService.Client:IsPlaying(player)
-	return true --if table.find(RoundService.Playing, player) then
+	return if RoundService.Playing then
+		if table.find(RoundService.Playing, player) then
+			true
+		else
+			false
+	else
+		false
 end
 
 function RoundService:GetRapTime(player)

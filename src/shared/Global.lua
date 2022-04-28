@@ -172,7 +172,7 @@ Global.RANKS = {
 
 	{
 		Name = "Hall of Famer 🔥",
-		isRainbow = true,
+		isRainbow = false,
 		MinWins = 500,
 		MaxWins = 1000,
 		Gradient = ColorSequence.new(
@@ -225,15 +225,16 @@ Global.ROUND_MESSAGES = {
 		LANDSLIDE = "%s (%s) has won by a MILE!",
 		MARGINAL = "%s (%s) has won, it was a close fight though!",
 		REGULAR = "%s (%s) has won.",
+		LEFT = "%s (%s) has won by default",
 		STALEMATE = "It's a stalemate! Nobody will win."
 	}
 }
 
 Global.ROUND_TIMES = {
 	VOTING_TIME = 15,
-	TURNS = 1, -- 4
+	TURNS = 4,
 	DEFAULT_LENGTH = 60,
-	EXTENDED_LENGTH = 1, -- 90
+	EXTENDED_LENGTH = 90,
 }
 
 Global.ROUND_MUSIC = {
@@ -257,7 +258,7 @@ Global.ROUND_MUSIC = {
 ----------------
 -- VERSIONING --
 ----------------
-Global.VERSION = "0.0.0"
+Global.VERSION = "1.0.0"
 Global.ENVIRONMENT = (RunService:IsStudio() and "development")
 	or (table.find(Global.PLACES.PRODUCTION, game.PlaceId) and "production")
 	or "staging"

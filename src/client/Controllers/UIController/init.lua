@@ -145,21 +145,24 @@ function UIController:KnitStart()
 
 			DJButton {
 				OnActivation = function(toggled)
-					local success, ownsGamepass = self.GamepassService:OwnsGamepass(Global.PRODUCTS.GAMEPASSES.DJ, true):await()
-					local playingSuccess, isPlaying = self.RoundService:IsPlaying():await()
-
 					local Map = workspace:WaitForChild("Map")
 					local DJStand = Map:WaitForChild("DJStand")
 					local BaseStand = DJStand:WaitForChild("BaseStand")
 					local Spawns = Map:WaitForChild("Spawns")
 
-					if success and playingSuccess and not isPlaying then
-						if toggled and ownsGamepass then
-							self.TeleportController:Teleport(BaseStand.CFrame)
-						elseif not toggled and ownsGamepass then
-							local randomSpawn = Spawns:GetChildren()[math.random(1, #Spawns:GetChildren())]
-							self.TeleportController:Teleport(randomSpawn.CFrame)
-						end
+					if toggled then
+						self.GamepassService:OwnsGamepass(Global.PRODUCTS.GAMEPASSES.DJ, true):andThen(function(doesOwn)
+							self.RoundService:IsPlaying():andThen(function(isPlaying)
+								print(doesOwn, isPlaying)
+								if doesOwn and not isPlaying then
+									self.TeleportController:Teleport(BaseStand.CFrame)
+								end
+							end):catch(warn)
+						end):catch(warn)
+					else
+						local spawns = Spawns:GetChildren()
+						local randomSpawn = spawns[math.random(1, #spawns)]
+						self.TeleportController:Teleport(randomSpawn.CFrame)
 					end
 				end
 			},

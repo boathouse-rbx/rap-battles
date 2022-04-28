@@ -126,7 +126,7 @@ function DataService.Client:GetRank(player)
 end
 
 function DataService:KnitStart()
-	if Global.ENVIRONMENT == "staging" then return end
+	--if Global.ENVIRONMENT == "staging" then return end
 
 	local function onPlayerAdded(player)
 		loadProfile(player)

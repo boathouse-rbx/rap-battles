@@ -16,14 +16,14 @@ local UPDATE_RAINBOW_NAME = "UPDATE_RAINBOW_NAMETAG"
 local RAINBOW_TIME = 5
 
 local function Nametag(props)
-	local rainbowColor = Value(
+	local colorState = Value(
 		ColorSequence.new(Color3.new(), Color3.new())
 	)
 
 	RunService:BindToRenderStep(UPDATE_RAINBOW_NAME, 0, function()
 		local hue = os.clock() % RAINBOW_TIME / RAINBOW_TIME
 		local color = Color3.fromHSV(hue, 1, 1)
-		rainbowColor:set(
+		colorState:set(
 			ColorSequence.new(color, color)
 		)
 	end)
@@ -65,7 +65,7 @@ local function Nametag(props)
 
 				[Children] = {
 					New "UIGradient" {
-						Color = if props.Rainbow then rainbowColor else props.Gradient:get(),
+						Color = if props.Rainbow:get() then colorState else props.Gradient,
 						Rotation = 90,
 					},
 				}
